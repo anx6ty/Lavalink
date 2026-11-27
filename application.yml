@@ -43,12 +43,24 @@ plugins:
     allowSearch: true
     allowDirectVideoIds: true
     allowDirectPlaylistIds: true
+    # Clients that work without a poToken go first; WEB/MWEB need one, so they are last.
     clients:
-      - WEB
-      - MWEB
       - ANDROID_VR
       - TVHTML5_SIMPLY
       - WEBEMBEDDED
+      - MWEB
+      - WEB
+    # Optional but the most reliable fix on datacenter IPs. Use a THROWAWAY Google account.
+    # First run: set enabled: true with no refreshToken, watch the logs for the device-login
+    # URL + code, approve it, then paste the printed refresh token here and redeploy.
+    oauth:
+      enabled: ${YOUTUBE_OAUTH_ENABLED:false}
+      refreshToken: "${YOUTUBE_OAUTH_REFRESH_TOKEN:}"
+      skipInitialization: false
+    # Alternative/addition: a poToken + visitorData pair (needed for WEB/MWEB).
+    # pot:
+    #   token: "${YOUTUBE_POT_TOKEN}"
+    #   visitorData: "${YOUTUBE_VISITOR_DATA}"
 
 logging:
   level:
