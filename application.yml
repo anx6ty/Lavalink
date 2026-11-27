@@ -7,6 +7,9 @@ lavalink:
   plugins:
     - dependency: "dev.lavalink.youtube:youtube-plugin:1.18.2"
       snapshot: false
+    # Spotify tracks/albums/playlists + spsearch: (resolved to a playable mirror, see plugins.lavasrc)
+    - dependency: "com.github.topi314.lavasrc:lavasrc-plugin:4.8.1"
+      snapshot: false
 
   server:
     password: "${LAVALINK_SERVER_PASSWORD}"
@@ -36,8 +39,29 @@ lavalink:
     frameBufferDurationMs: 5000
     playerUpdateInterval: 5
     youtubePlaylistLoadLimit: 6
+    soundcloudSearchEnabled: true
 
 plugins:
+  lavasrc:
+    # Spotify only exposes metadata, so each track is mirrored to a playable source.
+    # SoundCloud first because it is not bot-gated; YouTube is the fallback.
+    providers:
+      - "scsearch:%QUERY%"
+      - "ytsearch:\"%ISRC%\""
+      - "ytsearch:%QUERY%"
+    sources:
+      spotify: true
+      applemusic: false
+      deezer: false
+      yandexmusic: false
+      flowerytts: false
+      youtube: false
+    spotify:
+      clientId: "${SPOTIFY_CLIENT_ID:}"
+      clientSecret: "${SPOTIFY_CLIENT_SECRET:}"
+      countryCode: "US"
+      playlistLoadLimit: 10   # pages of 100 tracks
+      albumLoadLimit: 6
   youtube:
     enabled: true
     allowSearch: true
